@@ -19,13 +19,19 @@ export default async function ProductViewPage({ params, searchParams }) {
     next: { revalidate: 120 },
   });
 
+  const query = await searchParams;
+
+  const from = query.from
+    ? decodeURIComponent(query.from)
+    : "/product/catalog/1";
+
   const product = await res.json();
   console.log(product);
 
   return (
     <div>
       <div>Product View Page</div>
-      <ProductViewCP product={product}></ProductViewCP>
+      <ProductViewCP product={product} from={from}></ProductViewCP>
     </div>
   );
 }

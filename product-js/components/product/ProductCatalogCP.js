@@ -10,12 +10,14 @@ export default function ProductCatalogCP({ products, total, current, size }) {
   const prev = current !== 1;
   const next = current < lastPage;
 
+  const from = encodeURIComponent(`/product/catalog/${current}`);
+
   return (
     <div>
       <ul>
         {products.map((product) => (
           <li className="m-2 p-1 border" key={product.pno}>
-            <Link href={`/product/view/${product.pno}`}>
+            <Link href={`/product/view/${product.pno}?from=${from}`}>
               <div>PNO: {product.pno}</div>
               <div>NAME: {product.pname}</div>
               <div>PRICE: {product.price} </div>
