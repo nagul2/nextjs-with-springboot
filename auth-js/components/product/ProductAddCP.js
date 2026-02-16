@@ -3,6 +3,7 @@
 import { postProduct } from "@/actions/productActions";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function ProductAddCP() {
   const [state, action, isPending] = useActionState(postProduct, {
@@ -10,6 +11,16 @@ export default function ProductAddCP() {
     result: "",
   });
   const router = useRouter();
+
+  const { data: session, status: sessionStatus } = useSession();
+  console.log(session);
+
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      alert("로그인 후 이용해 주세요");
+      router.push("/api/auth/signin");
+    }
+  }, [sessionStatus]);
 
   // 성공 메시지가 있을 경우 페이지 이동
   // useEffect 훅을 사용하여 상태 변경 후 페이지 이동
@@ -94,7 +105,7 @@ export default function ProductAddCP() {
               id="writer"
               name="writer"
               className="mt-1 block w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="작성자를 입력하세요"
+              defaultValue={session?.user?.email}
             />
           </div>
 
