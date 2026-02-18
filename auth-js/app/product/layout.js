@@ -16,7 +16,7 @@ export default function ProductLayout({ children }) {
               상품 카탈로그
             </Link>
             <Link
-              href="/login"
+              href="/account/signin"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
             >
               로그인

@@ -1,8 +1,10 @@
 "use client";
+
 import { deleteProduct, putProduct } from "@/actions/productActions";
 import Image from "next/image";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 export default function ProductEditCP({ product, from }) {
   const [putState, putAction, putPending] = useActionState(putProduct, {
@@ -15,6 +17,8 @@ export default function ProductEditCP({ product, from }) {
   );
 
   const { pno, pname, price, fileNames, writer, sale } = product;
+
+  const session = useAuthCheck();
 
   const router = useRouter();
 
@@ -176,15 +180,19 @@ export default function ProductEditCP({ product, from }) {
           </div>
         </form>
 
-        <form action={deleteAction} className="mt-4">
-          <input type="hidden" name="pno" value={pno}></input>
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 transition-colors duration-200"
-          >
-            삭제
-          </button>
-        </form>
+        {(product.writer === session?.user?.email ||
+          session?.user?.role === "ADMIN") && (
+          <form action={deleteAction} className="mt-4">
+            <input type="hidden" name="pno" value={pno}></input>
+            <button
+              type="submit"
+              disabled={deletePending}
+              className="w-full px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 transition-colors duration-200"
+            >
+              {deletePending ? "삭제 중..." : "삭제"}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

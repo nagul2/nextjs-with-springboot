@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function ProductViewCP({ product, from }) {
-  const [mainImage, setMainImage] = useState(product.fileNames[0]);
+  const [mainImage, setMainImage] = useState(product?.fileNames[0]);
+  const { data: session } = useSession();
 
   return (
     <div className="flex flex-col items-center p-6 bg-gray-50 min-h-screen">
@@ -13,7 +15,7 @@ export default function ProductViewCP({ product, from }) {
         {/* 상품 이미지 영역 (왼쪽) */}
         <div className="md:w-1/2 flex flex-col items-center space-y-4">
           <div className="relative w-full h-96 rounded-lg overflow-hidden shadow-md">
-            {/* 2. src를 상태 값인 mainImage로 변경 */}
+            {/* src를 상태 값인 mainImage로 변경 */}
             <Image
               src={`/api/backend/${mainImage}`}
               alt={product.pname}
@@ -30,7 +32,7 @@ export default function ProductViewCP({ product, from }) {
             {product.fileNames.map((fileName) => (
               <div
                 key={fileName}
-                // 3. 클릭 시 상태 변경 함수(setMainImage) 실행
+                // 클릭 시 상태 변경 함수(setMainImage) 실행
                 onClick={() => setMainImage(fileName)}
                 className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 cursor-pointer shrink-0 transition-all 
                   ${mainImage === fileName ? "border-blue-500 scale-105" : "border-transparent hover:border-blue-300"}`}
@@ -71,9 +73,30 @@ export default function ProductViewCP({ product, from }) {
           </p>
 
           <div className="pt-4">
-            <button className="w-full px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200">
-              구매하기
-            </button>
+            {/* 가져온 session으로 조건부 렌더링 */}
+            {session ? (
+              <button className="w-full px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200">
+                구매하기
+              </button>
+            ) : (
+              <button
+                disabled
+                className="w-full px-8 py-3 bg-gray-400 text-white font-semibold rounded-lg cursor-not-allowed"
+              >
+                로그인 후 구매 가능
+              </button>
+            )}
+
+            {/* 작성자 본인 확인 로직 */}
+            {session?.user?.email === product.writer && (
+              <Link
+                href={`/product/edit/${product.pno}?from=${encodeURIComponent(from)}`}
+              >
+                <button className="w-full px-8 py-3 bg-orange-600 mt-3 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 transition-colors duration-200">
+                  수정하기
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

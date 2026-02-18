@@ -1,34 +1,23 @@
 "use client";
 
 import { postProduct } from "@/actions/productActions";
-import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 export default function ProductAddCP() {
   const [state, action, isPending] = useActionState(postProduct, {
     message: "",
     result: "",
   });
-  const router = useRouter();
 
-  const { data: session, status: sessionStatus } = useSession();
+  const { session, router } = useAuthCheck();
   console.log(session);
 
-  useEffect(() => {
-    if (sessionStatus === "unauthenticated") {
-      alert("로그인 후 이용해 주세요");
-      router.push("/api/auth/signin");
-    }
-  }, [sessionStatus]);
-
-  // 성공 메시지가 있을 경우 페이지 이동
-  // useEffect 훅을 사용하여 상태 변경 후 페이지 이동
   useEffect(() => {
     if (state.result === "success") {
       router.push("/product/catalog/1");
     }
-  }, [state.result, router]); // state.result가 변경될 때마다 실행
+  }, [state.result, router]);
 
   return (
     <div className="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen">
