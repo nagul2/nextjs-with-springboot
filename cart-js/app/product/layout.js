@@ -1,6 +1,12 @@
+"use client";
+
+import MenuCartCount from "@/components/menu/MenuCartCount";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 import Link from "next/link";
 
 export default function ProductLayout({ children }) {
+  const { session } = useAuthCheck();
+
   return (
     <>
       <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
@@ -15,12 +21,28 @@ export default function ProductLayout({ children }) {
             >
               상품 카탈로그
             </Link>
-            <Link
-              href="/account/signin"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-            >
-              로그인
-            </Link>
+
+            {!session && (
+              <Link
+                href="/account/signin"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                로그인
+              </Link>
+            )}
+            {session && (
+              <>
+                <div className="text-gray-800 font-medium flex items-center">
+                  <MenuCartCount />
+                </div>
+                <Link
+                  href="/account/signout"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                >
+                  로그아웃
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>

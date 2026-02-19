@@ -33,3 +33,35 @@ export async function POST(request, { params }) {
     return NextResponse.json(result);
   }
 }
+
+export async function GET(request, { params }) {
+  const paramObj = await params;
+  const { action } = paramObj;
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return new NextResponse(
+      JSON.stringify({ message: "Authentication required" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  if (action === "list") {
+    const account = session.user.email;
+
+    const res = await fetch(
+      `http://localhost:8080/api/carts/list?account=${account}`,
+      {
+        method: "GET",
+      },
+    );
+
+    const result = await res.json();
+
+    return NextResponse.json(result);
+  }
+  return NextResponse.json([]);
+}
