@@ -18,7 +18,7 @@ export default function ProductEditCP({ product, from }) {
 
   const { pno, pname, price, fileNames, writer, sale } = product;
 
-  const session = useAuthCheck();
+  const { session, status } = useAuthCheck();
 
   const router = useRouter();
 

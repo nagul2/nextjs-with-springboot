@@ -1,5 +1,6 @@
 "use client";
 
+import AddCartButton from "./view/AddCartButton";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -73,30 +74,7 @@ export default function ProductViewCP({ product, from }) {
           </p>
 
           <div className="pt-4">
-            {/* 가져온 session으로 조건부 렌더링 */}
-            {session ? (
-              <button className="w-full px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200">
-                구매하기
-              </button>
-            ) : (
-              <button
-                disabled
-                className="w-full px-8 py-3 bg-gray-400 text-white font-semibold rounded-lg cursor-not-allowed"
-              >
-                로그인 후 구매 가능
-              </button>
-            )}
-
-            {/* 작성자 본인 확인 로직 */}
-            {session?.user?.email === product.writer && (
-              <Link
-                href={`/product/edit/${product.pno}?from=${encodeURIComponent(from)}`}
-              >
-                <button className="w-full px-8 py-3 bg-orange-600 mt-3 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 transition-colors duration-200">
-                  수정하기
-                </button>
-              </Link>
-            )}
+            <AddCartButton product={product} />
           </div>
         </div>
       </div>

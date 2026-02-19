@@ -18,8 +18,7 @@ export default function ProductEditCP({ product, from }) {
 
   const { pno, pname, price, fileNames, writer, sale } = product;
 
-  const session = useAuthCheck();
-
+  const { session, status } = useAuthCheck();
   const router = useRouter();
 
   const [oldFiles, setOldFiles] = useState(fileNames);
@@ -146,7 +145,7 @@ export default function ProductEditCP({ product, from }) {
               기존 이미지
             </h3>
             <ul className="flex flex-wrap gap-4">
-              {oldFiles.map((fileName) => (
+              {oldFiles?.map((fileName) => (
                 <li key={fileName} className="relative w-32 h-32">
                   <Image
                     src={`/api/backend/${fileName}`}
